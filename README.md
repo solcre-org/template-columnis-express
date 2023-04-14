@@ -33,16 +33,16 @@ If the console gives you the following, we are on the right track **don't worry 
 
 ```bash
 $ cd config/autoload
-$ mv local.php.dist local,php
+$ mv local.php.dist local.php
 ```
 
--  Inside local.php change the client-number
+-  Into local.php change the client-number
    ![local php](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images/Screen+Shot+2023-04-14+at+11.14.25.png)
 
--  Inside the docker terminal
+-  Into the docker terminal
 
 ```bash
-php composer.phar install
+$ php composer.phar install
 ```
 
 -  Open localhost:8080 in your browser and if you get something like this (img), everything is ok
