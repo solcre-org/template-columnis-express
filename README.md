@@ -25,7 +25,7 @@ $ cd columnis-express
 $ docker-compose up -d
 ```
 
-![run container done](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images/Screen+Shot+2023-04-14+at+10.59.08.png)
+![run container done](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images-github/docker.png)
 
 If the console gives you the following, we are on the right track **don't worry about the warning**
 
@@ -37,7 +37,7 @@ $ mv local.php.dist local.php
 ```
 
 -  Into local.php change the client-number
-   ![local php](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images/Screen+Shot+2023-04-14+at+11.14.25.png)
+   ![local php](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images-github/local-php.png)
 
 -  Into the docker terminal
 
@@ -46,10 +46,10 @@ $ php composer.phar install
 ```
 
 -  Open localhost:8080 in your browser and if you get something like this (img), everything is ok
-   ![404 columnis](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images/Screen+Shot+2023-04-14+at+11.27.44.png)
+   ![404 columnis](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images-github/404.png)
 
 -  Inside public_html paste all your project dir (templates, assets, css, etc) like this:
-   ![404 columnis](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images/Screen+Shot+2023-04-14+at+11.30.55.png)
+   ![404 columnis](https://s3.amazonaws.com/cdn.express-beta.solcre.com/images-github/public_html.png)
 
    **Note:** for all this to work the .htacces, 404.html, index.php and php.ini files must be inside public_html and must never be modified, deleted or anything like that.
 
