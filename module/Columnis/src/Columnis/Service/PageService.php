@@ -105,10 +105,12 @@ class PageService {
      * @return boolean
      */
     public function fetch(Page $page, Array $queryString = null, $accessToken = null, $retry = 0) {
-        $id = $page->getId();
-        $endpoint = '/pages/'.$id.'/generate';
+        $endpoint = '/pages/generate-json';
         $uri = $this->getApiService()->getUri($endpoint);
         $lang = $this->getApiService()->parseLang($queryString['lang']);
+        
+        //Replace lang to old format
+        $queryString['lang'] = $this->getApiService()->parseLangQP($queryString['lang']);
         
         $headers = array(
             'Accept' => 'application/vnd.columnis.v2+json',

@@ -6,11 +6,10 @@ return array(
             'columnis' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/:lang]/:seo{-}-:pageId',
+                    'route' => '[/:lang]/:slug',
                     'constraints' => array(
-                        'lang' => 'espanol|english|portugues',
-                        'seo' => '[a-zA-Z0-9-_]+',
-                        'pageId' => '\d+',
+                        'lang' => 'es|en|zh|pt',
+                        'slug' => '[a-zA-Z0-9-_/]+'
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Columnis\Controller',
@@ -38,7 +37,7 @@ return array(
                 'options' => array(
                     'route'    => '/:lang[/]',
                     'constraints' => array(
-                        'lang' => 'espanol|english|portugues',
+                        'lang' => 'es|en|zh|pt',
                     ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'Columnis\Controller',

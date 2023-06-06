@@ -33,6 +33,12 @@ class ApiService
      */
     protected $clientNumber;
 
+    /*
+     * Columnis Api Default lang
+     * @var string $defaultLang
+     */
+    protected $defaultLang;
+
     /**
      * Returns the Guzzle Client
      * @return \GuzzleHttp\Client
@@ -69,10 +75,29 @@ class ApiService
         $this->clientNumber = $clientNumber;
     }
 
-    public function __construct(GuzzleClient $httpClient, $clientNumber)
+    /**
+     * Returns the Defualt lang of Columnis Api
+     * @return string
+     */
+    public function getDefaultLang()
+    {
+        return $this->defaultLang;
+    }
+
+    /**
+     * Sets the Default lang of Columnis Api
+     * @param string $defaultLang
+     */
+    public function setDefaultLang($defaultLang)
+    {
+        $this->defaultLang = $defaultLang;
+    }
+
+    public function __construct(GuzzleClient $httpClient, $clientNumber, $defaultLang)
     {
         $this->setHttpClient($httpClient);
         $this->setClientNumber($clientNumber);
+        $this->setDefaultLang($defaultLang);
     }
 
     /**
@@ -143,14 +168,34 @@ class ApiService
     }
     
     public function parseLang($fullLang){
-        $lang = 'es';
+        $lang = $this->defaultLang;
+
+        if(in_array($fullLang, ['es', 'zh', 'pt', 'en'])){
+            $lang = $fullLang;
+        }
+        return $lang;
+    }
+    
+    public function parseLangQP($fullLang){
+        $lang = '';
+
+        //Empty
+        if(empty($fullLang)){
+            $fullLang = $this->defaultLang;
+        }
         
         switch($fullLang) {
-            case 'english':
-                $lang = 'en';
+            case 'es':
+                $lang = 'espanol';
                 break;
-            case 'portugues':
-                $lang = 'pt';
+            case 'pt':
+                $lang = 'portugues';
+                break;
+            case 'zh':
+                $lang = 'chinese';
+                break;
+            case 'en':
+                $lang = 'english';
                 break;
         }
         

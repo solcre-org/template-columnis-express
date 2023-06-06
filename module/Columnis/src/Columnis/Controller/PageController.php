@@ -14,8 +14,8 @@ class PageController extends AbstractActionController
 {
     public function indexAction()
     {
-        $pageId = (int)$this->params()->fromRoute('pageId');
-        $lang = $this->params()->fromRoute('lang');
+        $lang        = $this->params()->fromRoute('lang');
+        $slug        = $this->params()->fromRoute('slug');
         $queryParams = $this->params()->fromQuery();
         if (! is_array($queryParams)) {
             $queryParams = [];
@@ -28,7 +28,8 @@ class PageController extends AbstractActionController
         }
 
         $queryParams['lang'] = $lang;
-        $page = $this->fetchPage($pageId, $queryParams, true);
+        $queryParams['slug'] = $slug;
+        $page = $this->fetchPage($queryParams, true);
 
         if ($page instanceof Page) {
             $viewVariables = $page->getData();
@@ -75,14 +76,13 @@ class PageController extends AbstractActionController
         $_SESSION['token'] = $queryParams['token'];
     }
 
-    protected function fetchPage($pageId, Array $params = null, $withBreakpoints = false)
+    protected function fetchPage(Array $params = null, $withBreakpoints = false)
     {
         $accessToken = $this->getAdminSession();
         if ($accessToken === null) {
             $accessToken = $this->getRequest()->getHeaders()->get('Cookie')->columnis_token;
         }
         $page = new Page();
-        $page->setId($pageId);
         $pageService = $this->getPageService($withBreakpoints);
         try {
             $apiResponse = $pageService->fetch($page, $params, $accessToken);

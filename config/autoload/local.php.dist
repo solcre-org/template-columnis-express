@@ -16,6 +16,7 @@ return array(
     'columnis' => array(
         'api_settings' => array(
             'client_number' => '001',
+            'default_lang' => 'es',
             'api_base_url' => 'http://api2.columnis.com/'
         )
     ),
