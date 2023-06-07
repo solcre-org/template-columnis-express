@@ -6,7 +6,7 @@ return array(
             'columnis' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '[/:lang]/:slug',
+                    'route' => '[/:lang]/:slug/',
                     'constraints' => array(
                         'lang' => 'es|en|zh|pt',
                         'slug' => '[a-zA-Z0-9-_/]+'
