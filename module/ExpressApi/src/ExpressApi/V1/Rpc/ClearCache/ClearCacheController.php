@@ -16,9 +16,16 @@ class ClearCacheController extends AbstractActionController {
     public function clearCacheAction() {
         $params = $this->bodyParams();
         $dirs = array_key_exists('dir', $params) ? explode(';', $params['dir']) : array();
+        $key = array_key_exists('key', $params) ? $params['key'] : '';
         $result = array(
             'success' => true
         );
+        
+        //Control key
+        if($key !== 'columnis'){
+            return new ApiProblemResponse(new ApiProblem(400, "Invalid secret key."));
+        }
+
         if(is_array($dirs) && count($dirs)) {
             foreach($dirs as $dir) {
                 if(in_array($dir, $this->dirsWhiteList)) {

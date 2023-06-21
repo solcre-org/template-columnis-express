@@ -303,7 +303,7 @@ return array(
                 'actions' => array(
                     'clearCache' => array(
                         'GET' => false,
-                        'POST' => true,
+                        'POST' => false,
                         'PATCH' => false,
                         'PUT' => false,
                         'DELETE' => false,
