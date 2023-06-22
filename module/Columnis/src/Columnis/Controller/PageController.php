@@ -66,7 +66,7 @@ class PageController extends AbstractActionController
     {
         session_start();
         if ($this->isAdminSessionSet()) {
-            \session_unset($_SESSION['token']);
+            \session_unset();
         }
     }
 

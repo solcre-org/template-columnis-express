@@ -1,2 +1,3 @@
 *
 !.gitignore
+!inc/admin-bar.tpl
