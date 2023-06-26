@@ -13,8 +13,10 @@ RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
 
+# Agregar barra al final si no existe
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(.*)/$
-RewriteRule ^(.*[^/])$ /$1/ [L,R=301]
+RewriteRule ^(.*[^/])$ %{REQUEST_URI}/ [L,R=301]
 
 # The following rewrites all other queries to index.php. The 
 # condition ensures that if you are using Apache aliases to do
