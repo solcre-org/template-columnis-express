@@ -14,6 +14,7 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
 
 # Agregar barra al final si no existe
+RewriteCond %{REQUEST_URI} !^/express_api [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(.*)/$
 RewriteRule ^(.*[^/])$ %{REQUEST_URI}/ [L,R=301]
