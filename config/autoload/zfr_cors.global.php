@@ -11,6 +11,7 @@ return array(
          */
         'allowed_origins' => array(
             'http://manager.columnis.com', 
+            'https://manager.columnis.com', 
             'http://manager.columnis.dev', 
             'http://manager.columnis.prod', 
             'http://installer.columnis.com',
