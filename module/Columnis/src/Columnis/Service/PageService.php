@@ -114,7 +114,8 @@ class PageService {
         
         $headers = array(
             'Accept' => 'application/vnd.columnis.v2+json',
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'X-Forwarded-For2' => $_SERVER['REMOTE_ADDR']
         );
         if (!empty($accessToken)) {
             $headers['Authorization'] = sprintf('Bearer %s', $accessToken);
