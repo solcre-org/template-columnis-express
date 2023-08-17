@@ -33,12 +33,6 @@ class ApiService
      */
     protected $clientNumber;
 
-    /*
-     * Columnis Api Default lang
-     * @var string $defaultLang
-     */
-    protected $defaultLang;
-
     /**
      * Returns the Guzzle Client
      * @return \GuzzleHttp\Client
@@ -75,29 +69,10 @@ class ApiService
         $this->clientNumber = $clientNumber;
     }
 
-    /**
-     * Returns the Defualt lang of Columnis Api
-     * @return string
-     */
-    public function getDefaultLang()
-    {
-        return $this->defaultLang;
-    }
-
-    /**
-     * Sets the Default lang of Columnis Api
-     * @param string $defaultLang
-     */
-    public function setDefaultLang($defaultLang)
-    {
-        $this->defaultLang = $defaultLang;
-    }
-
-    public function __construct(GuzzleClient $httpClient, $clientNumber, $defaultLang)
+    public function __construct(GuzzleClient $httpClient, $clientNumber)
     {
         $this->setHttpClient($httpClient);
         $this->setClientNumber($clientNumber);
-        $this->setDefaultLang($defaultLang);
     }
 
     /**
@@ -168,21 +143,16 @@ class ApiService
     }
     
     public function parseLang($fullLang){
-        $lang = $this->defaultLang;
+        $lang = 'en';
 
-        if(in_array($fullLang, ['es', 'zh', 'pt', 'en'])){
+        if(in_array($fullLang, ['es', 'zh', 'pt'])){
             $lang = $fullLang;
         }
         return $lang;
     }
     
     public function parseLangQP($fullLang){
-        $lang = '';
-
-        //Empty
-        if(empty($fullLang)){
-            $fullLang = $this->defaultLang;
-        }
+        $lang = 'english';
         
         switch($fullLang) {
             case 'es':
@@ -193,9 +163,6 @@ class ApiService
                 break;
             case 'zh':
                 $lang = 'chinese';
-                break;
-            case 'en':
-                $lang = 'english';
                 break;
         }
         

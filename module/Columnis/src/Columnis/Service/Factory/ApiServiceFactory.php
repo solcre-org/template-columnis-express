@@ -33,8 +33,8 @@ class ApiServiceFactory implements FactoryInterface {
         if(!isset($apiConfig['api_base_url'])) {
             throw new ApiBaseUrlNotSetException("There is no api_base_url set in local.php config file.");
         }
+
         $clientNumber = $apiConfig['client_number'];
-        $defaultLang = $apiConfig['default_lang'];
         $apiUrl = $apiConfig['api_base_url'];
         $httpClient = new GuzzleClient(array('base_url' => $apiUrl));
 
@@ -54,6 +54,6 @@ class ApiServiceFactory implements FactoryInterface {
             );
         }
 
-        return new ApiService($httpClient, $clientNumber, $defaultLang);
+        return new ApiService($httpClient, $clientNumber);
     }
 }
