@@ -6,74 +6,101 @@ use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 
-class ClearCacheController extends AbstractActionController {
-
-    private $dirsWhiteList = array(
+class ClearCacheController extends AbstractActionController
+{
+    private array $dirsWhiteList = [
         'api',
-        'module'
-    );
+        'module',
+    ];
 
-    public function clearCacheAction() {
+    public function clearCacheAction()
+    {
         $params = $this->bodyParams();
-        $dirs = array_key_exists('dir', $params) ? explode(';', $params['dir']) : array();
-        $key = array_key_exists('key', $params) ? $params['key'] : '';
-        $result = array(
-            'success' => true
-        );
-        
-        //Control key
-        if($key !== 'columnis'){
-            return new ApiProblemResponse(new ApiProblem(400, "Invalid secret key."));
-        }
+        $dirs = $params['dir'] ?? '';
+        $dirs = is_string($dirs) ? explode(';', $dirs) : [];
 
-        if(is_array($dirs) && count($dirs)) {
-            foreach($dirs as $dir) {
-                if(in_array($dir, $this->dirsWhiteList)) {
-                    $result['success'] = $this->clearCacheDir($dir) && $result['success'];
-                }
-                else {
-                    return new ApiProblemResponse(new ApiProblem(400, "The dir ".$dir." is not allowed."));
-                }
+        // Ensure public_html/pages is always included
+        $dirs[] = 'public_html/pages';
+
+        $result = ['success' => true];
+
+        foreach ($dirs as $dir) {
+            $cacheDir = $this->resolveCacheDir($dir);
+
+            if (!$cacheDir) {
+                return new ApiProblemResponse(
+                    new ApiProblem(400, "The dir '$dir' is not allowed.")
+                );
+            }
+
+            if (!$this->clearCacheDir($cacheDir)) {
+                $result['success'] = false;
             }
         }
+
         return $result;
     }
 
-    private function getCacheDir() {
-        return dirname(__FILE__).'/../../../../../../../data/cache/';
+    private function resolveCacheDir(string $dir): ?string
+    {
+        if ($dir === 'public_html/pages') {
+            return realpath(__DIR__ . '/../../../../../../../public_html/pages/');
+        }
+
+        if (in_array($dir, $this->dirsWhiteList, true)) {
+            return $this->getCacheDir() . DIRECTORY_SEPARATOR . $dir;
+        }
+
+        return null;
     }
 
-    private function clearCacheDir($dir) {
-        $cacheDir = $this->getCacheDir().$dir;
-        if(is_dir($cacheDir)) {
-            $dirContent = array_diff(scandir($cacheDir), array('.', '..'));
-            foreach($dirContent as $cacheNode) {
-                $cacheRealPath = $cacheDir.'/'.$cacheNode;
-                if($this->canDeleteCacheFolder($cacheDir, $cacheNode)) {
-                    $this->delTree($cacheRealPath);
+    private function getCacheDir(): string
+    {
+        return realpath(__DIR__ . '/../../../../../../../data/cache/') ?: '';
+    }
+
+    private function clearCacheDir(string $cacheDir): bool
+    {
+        if (!is_dir($cacheDir)) {
+            return false;
+        }
+
+        $dirContent = array_diff(scandir($cacheDir) ?: [], ['.', '..']);
+
+        foreach ($dirContent as $cacheNode) {
+            $cacheRealPath = $cacheDir . DIRECTORY_SEPARATOR . $cacheNode;
+
+            if (is_dir($cacheRealPath)) {
+                if (!$this->deleteFolder($cacheRealPath)) {
+                    return false;
                 }
-                else if($this->canDeleteCacheFile($cacheDir, $cacheNode)) {
-                    unlink($cacheRealPath);
+            } else {
+                if (!unlink($cacheRealPath)) {
+                    return false;
                 }
             }
         }
+
         return true;
     }
 
-    private function canDeleteCacheFolder($path, $nodeCache) {
-        return (is_dir($path.'/'.$nodeCache) && $nodeCache !== '.' && $nodeCache !== '..');
-    }
+    private function deleteFolder(string $dir): bool
+    {
+        $files = array_diff(scandir($dir) ?: [], ['.', '..']);
 
-    private function canDeleteCacheFile($path, $nodeCache) {
-        $ext = pathinfo($nodeCache, PATHINFO_EXTENSION);
-        return ($ext === 'php');
-    }
-
-    public static function delTree($dir) {
-        $files = array_diff(scandir($dir), array('.', '..'));
-        foreach($files as $file) {
-            (is_dir("$dir/$file") && !is_link($dir)) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+        foreach ($files as $file) {
+            $filePath = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($filePath)) {
+                if (!$this->deleteFolder($filePath)) {
+                    return false;
+                }
+            } else {
+                if (!unlink($filePath)) {
+                    return false;
+                }
+            }
         }
+
         return rmdir($dir);
     }
 }

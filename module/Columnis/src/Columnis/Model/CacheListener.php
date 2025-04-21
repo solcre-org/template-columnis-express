@@ -4,8 +4,11 @@ namespace Columnis\Model;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Http\Header\Vary;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
+use Zend\Stdlib\RequestInterface;
+use ZF\ContentNegotiation\Request;
 
 class CacheListener extends AbstractListenerAggregate
 {
@@ -38,7 +41,7 @@ class CacheListener extends AbstractListenerAggregate
 
         // does our route have the cache flag set to true?
         if ($match->getParam('cache')) {
-            $cacheKey = $this->genCacheName($match);
+            $cacheKey = $this->genCacheName($event);
 
             // get the cache page for this route
             $data = $this->cacheService->getItem($cacheKey);
@@ -68,7 +71,7 @@ class CacheListener extends AbstractListenerAggregate
             $data = $response->getContent();
 
             $this->setCacheDir($match);
-            $cacheKey = $this->genCacheName($match);
+            $cacheKey = $this->genCacheName($event);
             $this->cacheService->setItem($cacheKey, $data);
         }
     }
@@ -80,14 +83,47 @@ class CacheListener extends AbstractListenerAggregate
         $options = $this->cacheService->getOptions();
         $options->setNamespace($lang);
     }
- 
+
     /**
      * @param \Zend\Mvc\Router\RouteMatch $match
      */
-    public function genCacheName(RouteMatch $match)
+    public function genCacheName(MvcEvent $event)
     {
-        $params = $match->getParams();
-        $pageId = (int)$params['pageId'];
-        return $pageId;
+        return $this->generateRequestMd5($event->getRequest());
+    }
+
+    private function generateRequestMd5(RequestInterface $request): string
+    {
+        // Get the URL
+        $url = $request->getUriString();
+
+        // Get query parameters
+        $queryParams = $request->getQuery()->toArray();
+        ksort($queryParams);
+
+        // Get Vary headers
+        $varyHeaders = [];
+        $varyHeader = $request->getHeader('Vary');
+        if ($varyHeader instanceof Vary) {
+            $varyFields = $varyHeader->getFieldValue();
+            foreach ($varyFields as $field) {
+                $header = $request->getHeader($field);
+                if ($header) {
+                    $varyHeaders[$field] = $header->getFieldValue();
+                }
+            }
+        }
+        ksort($varyHeaders);
+
+        // Combine all elements
+        $elements = [
+            'method'       => $request->getMethod(),
+            'url'          => $url,
+            'query'        => http_build_query($queryParams),
+            'vary_headers' => $varyHeaders,
+        ];
+
+        // Generate and return MD5 hash
+        return md5(json_encode($elements));
     }
 }
