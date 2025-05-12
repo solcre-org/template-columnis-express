@@ -340,9 +340,8 @@
             <div class="container"><!--
                 --><div class="align">
 
-                    <p><strong>Oops!</strong> Ocurri&oacute; un error</p>
-                    <p>Archivo: {$exception->getFile()}:{$exception->getLine()}</p>
-                    <p>Mensaje: {$exception->getMessage()}</p>
+                    <p><strong>Oops!</strong> La página que estás buscando no existe</p>
+
                     <a href="/" class="boton">Volver a página de Inicio</a>
 
                 </div> <!-- .align -->

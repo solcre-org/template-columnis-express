@@ -232,7 +232,7 @@ class HtmlCache extends Filesystem
         return true;
     }
 
-    public function getMetadata($key): array|bool
+    public function getMetadata($key): array
     {
         $options = $this->getOptions();
         if ($options->getReadable() && $options->getClearStatCache()) {
@@ -252,7 +252,7 @@ class HtmlCache extends Filesystem
         return parent::getMetadatas($keys);
     }
 
-    protected function internalGetMetadata(&$normalizedKey): array|bool
+    protected function internalGetMetadata(&$normalizedKey): array
     {
         if (!$this->internalHasItem($normalizedKey)) {
             return false;
